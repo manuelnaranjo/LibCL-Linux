@@ -16,7 +16,7 @@
 
 #include <vector>
 
-#include "sort\\oclRadixSort.h"
+#include "sort/oclRadixSort.h"
 
 class oclFluid3D : public oclProgram
 {

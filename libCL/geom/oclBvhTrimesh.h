@@ -16,7 +16,7 @@
 
 #include "oclProgram.h"
 
-#include "sort\\oclRadixSort.h"
+#include "sort/oclRadixSort.h"
 
 class oclBvhTrimesh : public oclProgram
 {
@@ -59,7 +59,7 @@ class oclBvhTrimesh : public oclProgram
 
         static const int sBVH	= 0x001;
 
-		static const cl_uint cWarpSize = 32;
+		static const size_t cWarpSize = 32;
 
 		oclKernel clAABB;
 		oclKernel clMorton;

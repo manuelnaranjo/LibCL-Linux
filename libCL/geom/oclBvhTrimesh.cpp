@@ -94,7 +94,7 @@ int oclBvhTrimesh::compile()
 int oclBvhTrimesh::compute(oclDevice& iDevice, oclBuffer& bfVertex, oclBuffer& bfIndex)
 {
 	cl_uint lVertices = bfVertex.count<cl_float4>();
-	cl_uint lTriangles = bfIndex.count<cl_uint>()/3;
+	size_t lTriangles = bfIndex.count<size_t>()/3;
 
 	if (bfMortonKey.count<cl_uint>() != lTriangles)
 	{
@@ -117,7 +117,16 @@ int oclBvhTrimesh::compute(oclDevice& iDevice, oclBuffer& bfVertex, oclBuffer& b
 	clSetKernelArg(clAABB, 0, sizeof(cl_mem), bfVertex);
 	clSetKernelArg(clAABB, 1, sizeof(cl_mem), bfAABB);
 	clSetKernelArg(clAABB, 2, sizeof(cl_uint), &lVertices);
-	sStatusCL = clEnqueueNDRangeKernel(iDevice, clAABB, 1, NULL, &lBatchSize, &cWarpSize, 0, NULL, clAABB.getEvent());
+	sStatusCL = clEnqueueNDRangeKernel(
+	    iDevice, 
+	    clAABB, 
+	    1, 
+	    NULL, 
+	    &lBatchSize, 
+	    &cWarpSize, 
+	    0, 
+	    NULL, 
+	    clAABB.getEvent());
 	ENQUEUE_VALIDATE
 
 	//
