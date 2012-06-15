@@ -1,0 +1,37 @@
+env = Environment()
+
+env.Append(CPPPATH=[Dir("#").abspath])
+
+sources = Split("""
+    oclBuffer.cpp
+    oclCommon.cpp
+    oclContext.cpp
+    oclDevice.cpp
+    oclImage2D.cpp
+    oclImage3D.cpp
+    oclKernel.cpp
+    oclMem.cpp
+    oclObject.cpp
+    oclProgram.cpp
+    image/oclBloom.cpp
+    image/oclBilateralGrid.cpp
+    image/oclToneMapping.cpp
+    image/oclAmbientOcclusion.cpp
+    geom/oclBvhTrimesh.cpp
+    color/oclColor.cpp
+    color/oclQuantize.cpp
+    phys/oclFluid3D.cpp
+    phys/oclFluid3Dnext.cpp
+    filter/oclTangent.cpp
+    filter/oclRecursiveGaussian.cpp
+    filter/oclSobel.cpp
+    filter/oclConvolute.cpp
+    filter/oclBilateralGrid.cpp
+    filter/oclBilinearPyramid.cpp
+    filter/oclBilateral.cpp
+    math/oclVector.cpp
+    sort/oclRadixSort.cpp
+    util/oclMemory.cpp
+""")
+
+object_list = env.Object(source = sources)
