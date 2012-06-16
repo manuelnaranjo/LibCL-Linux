@@ -13,6 +13,9 @@
 // limitations under the License.
 #include "oclFluid3D.h"
 
+const size_t oclFluid3D::cLocalSize = 256;
+const size_t oclFluid3D::cBucketCount = 16777216;
+
 char* oclFluid3D::EVT_INTEGRATE = "OnIntegrate";
 
 oclFluid3D::oclFluid3D(oclContext& iContext)

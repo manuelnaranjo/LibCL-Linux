@@ -70,8 +70,8 @@ class oclFluid3D : public oclProgram
         virtual void addEventHandler(srtEvent& iEvent);
 
         // sizes
-		static const size_t cLocalSize = 256;
-		static const size_t cBucketCount = 16777216;
+		static const size_t cLocalSize;
+		static const size_t cBucketCount;
 
 	protected:
 
@@ -121,7 +121,5 @@ class oclFluid3D : public oclProgram
 		srtEvent* mIntegrateCb;
 
 };      
-
-
 
 #endif

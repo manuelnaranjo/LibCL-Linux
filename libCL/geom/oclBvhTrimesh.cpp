@@ -15,31 +15,34 @@
 
 #include "oclBvhTrimesh.h"
 
+const size_t oclBvhTrimesh::cWarpSize = 32;
+
 oclBvhTrimesh::oclBvhTrimesh(oclContext& iContext)
-: oclProgram(iContext, "oclBvhTrimesh")
-// buffers
-, bfAABB(iContext, "bfAABB")
-, bfMortonKey(iContext, "bfMortonKey")
-, bfMortonVal(iContext, "bfMortonVal")
-, bfBvhRoot(iContext, "bfBvhRoot")
-, bfBvhNode(iContext, "bfBvhNode")
-// kernels
-, clAABB(*this)
-, clMorton(*this)
-, clCreateNodes(*this)
-, clLinkNodes(*this)
-, clCreateLeaves(*this)
-, clComputeAABBs(*this)
-// programs
-, mRadixSort(iContext)
-// members
-, mRootNode(0)
+  : oclProgram(iContext, "oclBvhTrimesh")
+    // buffers
+  , bfAABB(iContext, "bfAABB")
+  , bfMortonKey(iContext, "bfMortonKey")
+  , bfMortonVal(iContext, "bfMortonVal")
+  , bfBvhRoot(iContext, "bfBvhRoot")
+  , bfBvhNode(iContext, "bfBvhNode")
+    // kernels
+  , clAABB(*this)
+  , clMorton(*this)
+  , clCreateNodes(*this)
+  , clLinkNodes(*this)
+  , clCreateLeaves(*this)
+  , clComputeAABBs(*this)
+    // programs
+  , mRadixSort(iContext)
+    // members
+  , mRootNode(0)
 {
 	bfAABB.create<srtAABB>(CL_MEM_READ_WRITE | CL_MEM_ALLOC_HOST_PTR, 1);
 	bfMortonKey.create<cl_uint>(CL_MEM_READ_WRITE | CL_MEM_ALLOC_HOST_PTR, 256);
 	bfMortonVal.create<cl_uint>(CL_MEM_READ_WRITE | CL_MEM_ALLOC_HOST_PTR, 256);
 	bfBvhNode.create<cl_char>(CL_MEM_READ_WRITE | CL_MEM_ALLOC_HOST_PTR, 1);
-	bfBvhRoot.create<cl_uint>(CL_MEM_READ_WRITE | CL_MEM_USE_HOST_PTR, 1, &mRootNode);
+	bfBvhRoot.create<cl_uint>(CL_MEM_READ_WRITE | CL_MEM_USE_HOST_PTR, 1, 
+                              &mRootNode);
 
 	addSourceFile("geom\\oclBvhTrimesh.cl");
 
@@ -91,7 +94,8 @@ int oclBvhTrimesh::compile()
 }
 
 
-int oclBvhTrimesh::compute(oclDevice& iDevice, oclBuffer& bfVertex, oclBuffer& bfIndex)
+int oclBvhTrimesh::compute(oclDevice& iDevice, oclBuffer& bfVertex, 
+                           oclBuffer& bfIndex)
 {
 	cl_uint lVertices = bfVertex.count<cl_float4>();
 	size_t lTriangles = bfIndex.count<size_t>()/3;
@@ -137,7 +141,8 @@ int oclBvhTrimesh::compute(oclDevice& iDevice, oclBuffer& bfVertex, oclBuffer& b
 	clSetKernelArg(clMorton, 2, sizeof(cl_mem), bfMortonKey);
 	clSetKernelArg(clMorton, 3, sizeof(cl_mem), bfMortonVal);
 	clSetKernelArg(clMorton, 4, sizeof(cl_mem), bfAABB);
-	sStatusCL = clEnqueueNDRangeKernel(iDevice, clMorton, 1, NULL, &lTriangles, NULL, 0, NULL, clMorton.getEvent());
+	sStatusCL = clEnqueueNDRangeKernel(iDevice, clMorton, 1, NULL, &lTriangles, 
+                                       NULL, 0, NULL, clMorton.getEvent());
 	ENQUEUE_VALIDATE
 
 	// 
@@ -156,25 +161,33 @@ int oclBvhTrimesh::compute(oclDevice& iDevice, oclBuffer& bfVertex, oclBuffer& b
 	clSetKernelArg(clCreateNodes, 0, sizeof(cl_mem), bfMortonKey);
 	clSetKernelArg(clCreateNodes, 1, sizeof(cl_mem), bfMortonVal);
 	clSetKernelArg(clCreateNodes, 2, sizeof(cl_mem), bfBvhNode);
-	sStatusCL = clEnqueueNDRangeKernel(iDevice, clCreateNodes, 1, NULL, &lGlobalSize, NULL, 0, NULL, clCreateNodes.getEvent());
+	sStatusCL = clEnqueueNDRangeKernel(iDevice, clCreateNodes, 1, NULL, 
+                                       &lGlobalSize, NULL, 0, NULL, 
+                                       clCreateNodes.getEvent());
 	ENQUEUE_VALIDATE
 
 	clSetKernelArg(clLinkNodes, 0, sizeof(cl_mem), bfMortonKey);
 	clSetKernelArg(clLinkNodes, 1, sizeof(cl_mem), bfBvhNode);
 	clSetKernelArg(clLinkNodes, 2, sizeof(cl_mem), bfBvhRoot);
-	sStatusCL = clEnqueueNDRangeKernel(iDevice, clLinkNodes, 1, NULL, &lGlobalSize, NULL, 0, NULL, clLinkNodes.getEvent());
+	sStatusCL = clEnqueueNDRangeKernel(iDevice, clLinkNodes, 1, NULL, 
+                                       &lGlobalSize, NULL, 0, NULL, 
+                                       clLinkNodes.getEvent());
 	ENQUEUE_VALIDATE
 
 	clSetKernelArg(clCreateLeaves, 0, sizeof(cl_mem), bfMortonVal);
 	clSetKernelArg(clCreateLeaves, 1, sizeof(cl_mem), bfBvhNode);
-	sStatusCL = clEnqueueNDRangeKernel(iDevice, clCreateLeaves, 1, NULL, &lTriangles, NULL, 0, NULL, clCreateLeaves.getEvent());
+	sStatusCL = clEnqueueNDRangeKernel(iDevice, clCreateLeaves, 1, NULL, 
+                                       &lTriangles, NULL, 0, NULL, 
+                                       clCreateLeaves.getEvent());
 	ENQUEUE_VALIDATE
 
 	clSetKernelArg(clComputeAABBs, 0, sizeof(cl_mem), bfIndex);
 	clSetKernelArg(clComputeAABBs, 1, sizeof(cl_mem), bfVertex);
 	clSetKernelArg(clComputeAABBs, 2, sizeof(cl_mem), bfBvhNode);
 	clSetKernelArg(clComputeAABBs, 3, sizeof(cl_mem), bfBvhRoot);
-	sStatusCL = clEnqueueNDRangeKernel(iDevice, clComputeAABBs, 1, NULL, &lTriangles, NULL, 0, NULL, clComputeAABBs.getEvent());
+	sStatusCL = clEnqueueNDRangeKernel(iDevice, clComputeAABBs, 1, 
+                                       NULL, &lTriangles, NULL, 0, NULL, 
+                                       clComputeAABBs.getEvent());
 	ENQUEUE_VALIDATE
 		
 	bfBvhRoot.map(CL_MAP_READ);

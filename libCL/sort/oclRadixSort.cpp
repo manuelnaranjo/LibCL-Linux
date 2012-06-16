@@ -15,6 +15,15 @@
 
 #include <math.h>
 
+#define CBITS 4
+#define BLOCK_SIZE 256
+#define BLOCK_SIZE_CUBE BLOCK_SIZE*BLOCK_SIZE*BLOCK_SIZE
+
+const int oclRadixSort::cBits = CBITS;
+const size_t oclRadixSort::cBlockSize = BLOCK_SIZE;
+const size_t oclRadixSort::cMaxArraySize = BLOCK_SIZE_CUBE*4/(1<<CBITS);
+
+
 oclRadixSort::oclRadixSort(oclContext& iContext)
 : oclProgram(iContext, "oclRadixSort")
 // buffers
