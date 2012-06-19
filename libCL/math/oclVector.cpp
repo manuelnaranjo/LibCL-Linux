@@ -21,7 +21,7 @@ oclVector::oclVector(oclContext& iContext)
 , clNormalize(*this)
 , clXor(*this)
 {
-    addSourceFile("math\\oclVector.cl");
+    addSourceFile("math/oclVector.cl");
 
     exportKernel(clNormalize);
     exportKernel(clXor);

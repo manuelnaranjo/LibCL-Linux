@@ -147,7 +147,7 @@ void oclProgram::addSourceFile(char* iPath)
     {
         srtSource lSource;
         strcpy(lSource.mPath, sRootPath);
-        strcat(lSource.mPath, "\\");
+        strcat(lSource.mPath, "/");
         strcat(lSource.mPath, iPath);
 
         fseek(lFile, 0, SEEK_END);

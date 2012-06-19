@@ -44,7 +44,7 @@ oclBvhTrimesh::oclBvhTrimesh(oclContext& iContext)
 	bfBvhRoot.create<cl_uint>(CL_MEM_READ_WRITE | CL_MEM_USE_HOST_PTR, 1, 
                               &mRootNode);
 
-	addSourceFile("geom\\oclBvhTrimesh.cl");
+	addSourceFile("geom/oclBvhTrimesh.cl");
 
 	exportKernel(clAABB);
 	exportKernel(clMorton);

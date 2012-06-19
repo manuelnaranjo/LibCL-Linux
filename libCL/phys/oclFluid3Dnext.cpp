@@ -72,7 +72,7 @@ oclFluid3Dnext::oclFluid3Dnext(oclContext& iContext)
 	bfBorder->create<cl_float2>(CL_MEM_READ_WRITE | CL_MEM_ALLOC_HOST_PTR, 2);
 	bfPosition->create<cl_float4>(CL_MEM_READ_WRITE | CL_MEM_ALLOC_HOST_PTR, mParticleCount);
 
-	addSourceFile("phys\\oclFluid3Dnext.cl");
+	addSourceFile("phys/oclFluid3Dnext.cl");
 
 	exportKernel(clReorder);
 	exportKernel(clHash);

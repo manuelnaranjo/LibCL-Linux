@@ -59,7 +59,7 @@ test_sources = Split("""
 test_objects = env.Object(source = test_sources)
 
 env.Program(
-        target="test",
+        target="TEST/test",
         source=test_sources + lib_sources
 )
 

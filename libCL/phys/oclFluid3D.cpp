@@ -79,7 +79,7 @@ oclFluid3D::oclFluid3D(oclContext& iContext)
 	bfVelocity->create<cl_float4>(CL_MEM_READ_WRITE | CL_MEM_ALLOC_HOST_PTR, mParticleCount);
 	bfForce->create<cl_float4>(CL_MEM_READ_WRITE | CL_MEM_ALLOC_HOST_PTR, mParticleCount);
 
-	addSourceFile("phys\\oclFluid3D.cl");
+	addSourceFile("phys/oclFluid3D.cl");
 
 	exportKernel(clClipBox);
 	exportKernel(clGravity);

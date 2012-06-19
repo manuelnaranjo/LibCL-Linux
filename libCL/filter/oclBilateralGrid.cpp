@@ -41,7 +41,8 @@ oclBilateralGrid::oclBilateralGrid(oclContext& iContext)
     bfGrid1Da.create<cl_float4>(CL_MEM_READ_WRITE | CL_MEM_ALLOC_HOST_PTR, mGridSize[0]*mGridSize[1]*mGridSize[2]);
     bfGrid1Db.create<cl_float4>(CL_MEM_READ_WRITE | CL_MEM_ALLOC_HOST_PTR, mGridSize[0]*mGridSize[1]*mGridSize[2]);
 
-	addSourceFile("filter\\oclBilateralGrid.cl");
+	
+	addSourceFile("filter/oclBilateralGrid.cl");
 
 	exportKernel(clSplit);
 	exportKernel(clSlice);

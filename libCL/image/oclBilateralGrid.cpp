@@ -20,7 +20,7 @@ oclBilateralGrid::oclBilateralGrid(oclContext& iContext)
 // kernels
 , clSSAO(*this)
 {
-	addSourceFile("image\\oclBilateralGrid.cl");
+	addSourceFile("image/oclBilateralGrid.cl");
 
 	exportKernel(clSSAO);
 }

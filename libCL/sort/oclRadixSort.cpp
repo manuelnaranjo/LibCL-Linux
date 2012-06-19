@@ -44,7 +44,7 @@ oclRadixSort::oclRadixSort(oclContext& iContext)
 	bfBlockOffset.create<cl_uint>(CL_MEM_READ_WRITE | CL_MEM_ALLOC_HOST_PTR, cBlockSize);
 	bfBlockSum.create<cl_uint>(CL_MEM_READ_WRITE | CL_MEM_ALLOC_HOST_PTR, cBlockSize);
 
-	addSourceFile("sort\\oclRadixSort.cl");
+	addSourceFile("sort/oclRadixSort.cl");
 
 	exportKernel(clBlockSort);
 	exportKernel(clBlockScan);
